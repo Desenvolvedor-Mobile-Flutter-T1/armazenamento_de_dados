@@ -6,15 +6,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('Home'), centerTitle: true),
       body: Column(
         spacing: 50,
         mainAxisAlignment: .center,
         crossAxisAlignment: .stretch,
-        children: [
-          ElevatedButton(onPressed: () {}, child: Text('SALVAR')),
-          ElevatedButton(onPressed: () {}, child: Text('RECUPERAR')),
-        ],
+        children: [],
       ),
     );
   }
