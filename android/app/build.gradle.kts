@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.armazenamento_de_dados"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
