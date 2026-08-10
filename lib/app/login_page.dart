@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,7 +28,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ElevatedButton(
               style: ButtonStyle(backgroundColor: .all(Colors.lightGreen)),
-              onPressed: () {},
+              onPressed: () async {
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                prefs.setBool('logado', true);
+                prefs.setString('nome', 'rafael');
+              },
               child: Text('Entrar'),
             ),
           ],
