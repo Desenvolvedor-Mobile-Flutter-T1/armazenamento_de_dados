@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,7 +28,15 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ElevatedButton(
               style: ButtonStyle(backgroundColor: .all(Colors.lightGreen)),
-              onPressed: () {},
+              onPressed: () {
+                final storage = FlutterSecureStorage(
+                  aOptions: AndroidOptions.biometric(
+                    enforceBiometrics: true, // Requires biometric/PIN/pattern
+                    biometricPromptTitle: 'Mostra o dedo rapa!',
+                  ),
+                );
+                storage.write(key: 'ativo', value: 'farmador');
+              },
               child: Text('Entrar'),
             ),
           ],

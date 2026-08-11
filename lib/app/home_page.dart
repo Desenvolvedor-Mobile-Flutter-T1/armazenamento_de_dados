@@ -1,4 +1,6 @@
+import 'package:armazenamento_de_dados/app/splash_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -11,7 +13,27 @@ class HomePage extends StatelessWidget {
         spacing: 50,
         mainAxisAlignment: .center,
         crossAxisAlignment: .stretch,
-        children: [],
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              final secure = FlutterSecureStorage(
+                aOptions: AndroidOptions.biometric(
+                  enforceBiometrics: true, // Requires biometric/PIN/pattern
+                  biometricPromptTitle: 'Mostra o dedo rapa!',
+                ),
+              );
+              secure.deleteAll().then((value) {
+                if (context.mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SplashPage()),
+                  );
+                }
+              });
+            },
+            child: Text('SAIR'),
+          ),
+        ],
       ),
     );
   }
