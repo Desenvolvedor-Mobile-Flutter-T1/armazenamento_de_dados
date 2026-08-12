@@ -1,9 +1,9 @@
-class Product {
+class ProductModel {
   final int id;
   final String name;
   final double price;
-  Product({required this.id, required this.name, required this.price});
+  ProductModel({required this.id, required this.name, required this.price});
 
   @override
-  String toString() => 'Product(id: $id, name: $name, price: $price)';
+  String toString() => 'ProductModel(id: $id, name: $name, price: $price)';
 }
