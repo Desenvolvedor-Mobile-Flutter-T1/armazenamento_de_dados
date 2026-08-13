@@ -7,14 +7,12 @@ import 'package:armazenamento_de_dados/app/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
-    registerAdapter(ProductModelAdapter());
-    registerAdapter(UserModelAdapter());
+    registerAdapter(CitacaoModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
-    registerAdapter(ProductModelAdapter());
-    registerAdapter(UserModelAdapter());
+    registerAdapter(CitacaoModelAdapter());
   }
 }

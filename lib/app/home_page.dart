@@ -1,58 +1,102 @@
-import 'package:armazenamento_de_dados/app/product_model.dart';
-import 'package:armazenamento_de_dados/app/user_model.dart';
+import 'package:armazenamento_de_dados/app/home_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_ce/hive_ce.dart';
+import 'package:flutter/services.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final searchController = TextEditingController();
+  final viewModel = HomeViewmodel();
+  @override
+  void initState() {
+    viewModel.buscarCitacoes();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home'), centerTitle: true),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text(
+          'Citações',
+          style: TextStyle(color: Colors.white, fontWeight: .bold),
+        ),
+        centerTitle: true,
+      ),
       body: Column(
-        spacing: 50,
-        mainAxisAlignment: .center,
+        mainAxisAlignment: .start,
         crossAxisAlignment: .stretch,
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              final box = await Hive.openBox('product');
-              final prod = ProductModel(id: 35, name: 'SAl', price: 5);
-              box.put(prod.id, prod);
-            },
-            child: Text('CRIAR'),
-          ), //create
-          ElevatedButton(
-            onPressed: () {
-              final box = Hive.box('product');
-              final prod = box.get(35);
-              print(prod);
-            },
-            child: Text('LER'),
-          ), //read
-          ElevatedButton(
-            onPressed: () {
-              final box = Hive.box('product');
-              box.put(
-                35,
-                ProductModel(
-                  id: 35,
-                  name: 'SABÃO',
-                  price: 10,
-                  userModel: UserModel(id: 10, name: 'Rafael'),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 15),
+            child: TextField(
+              controller: searchController,
+              keyboardType: .number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    if (searchController.text.isNotEmpty) {
+                      viewModel.filtrarPorId(
+                        id: int.parse(searchController.text),
+                      );
+                    }
+                  },
+                  icon: Icon(Icons.search),
+                ),
+              ),
+            ),
+          ),
+          ListenableBuilder(
+            listenable: viewModel,
+            builder: (context, child) {
+              if (viewModel.loading) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (viewModel.citacoes.isEmpty) {
+                return Center(
+                  child: Text(
+                    'Nenhuma citação encontrada, busque através do botão',
+                  ),
+                );
+              }
+
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.citacoes.length,
+                  itemBuilder: (context, index) {
+                    final citacao = viewModel.citacoes[index];
+                    return Container(
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: index % 2 == 0
+                            ? const Color.fromARGB(255, 206, 229, 218)
+                            : Colors.greenAccent,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          bottomLeft: Radius.circular(40),
+                        ),
+                      ),
+                      child: ListTile(
+                        leading: Text(citacao.id.toString()),
+                        title: Text(
+                          citacao.texto,
+                          style: TextStyle(fontStyle: .italic),
+                        ),
+                        subtitle: Text(citacao.autor),
+                      ),
+                    );
+                  },
                 ),
               );
             },
-            child: Text('ATUALIZAR'),
-          ), //update
-          ElevatedButton(
-            onPressed: () {
-              final box = Hive.box('product');
-              box.delete(35);
-            },
-            child: Text('DELETAR'),
-          ), //delete
+          ), //create
         ],
       ),
     );
