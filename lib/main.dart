@@ -1,7 +1,11 @@
 import 'package:armazenamento_de_dados/app/login_page.dart';
+import 'package:armazenamento_de_dados/app/shared/db_helper.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbHelper.db;
+
   runApp(const MainApp());
 }
 
