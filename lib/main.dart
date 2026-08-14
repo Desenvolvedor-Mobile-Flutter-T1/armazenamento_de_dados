@@ -1,3 +1,4 @@
+import 'package:armazenamento_de_dados/app/home_page.dart';
 import 'package:armazenamento_de_dados/app/login_page.dart';
 import 'package:armazenamento_de_dados/app/shared/db_helper.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: LoginPage());
+    return const MaterialApp(home: HomePage());
   }
 }
