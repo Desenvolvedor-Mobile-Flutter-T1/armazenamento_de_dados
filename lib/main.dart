@@ -1,5 +1,4 @@
 import 'package:armazenamento_de_dados/app/home_page.dart';
-import 'package:armazenamento_de_dados/app/login_page.dart';
 import 'package:armazenamento_de_dados/app/shared/db_helper.dart';
 import 'package:flutter/material.dart';
 

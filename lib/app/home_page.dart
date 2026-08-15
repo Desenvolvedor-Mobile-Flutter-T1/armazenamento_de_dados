@@ -1,8 +1,24 @@
-import 'package:armazenamento_de_dados/app/shared/db_helper.dart';
+import 'package:armazenamento_de_dados/app/home_data.dart';
+import 'package:armazenamento_de_dados/app/quote_model.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  HomeData data = HomeData();
+  final updateController = TextEditingController();
+  QuoteModel? selectedQuote;
+
+  @override
+  void initState() {
+    data.scriptzaoDoPoder();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,43 +29,62 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: .center,
         crossAxisAlignment: .stretch,
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              final db = await DbHelper.db;
-              await db.insert('QUOTES', {
-                'id': 2,
-                'quote': 'DEPENDE',
-                'author': 'PROGRAMADOR',
-              });
-            },
-            child: Text('CREATE'),
+          TextField(
+            controller: updateController,
+            maxLines: null,
+            decoration: InputDecoration(
+              suffix: IconButton(
+                onPressed: () {
+                  if (updateController.text.isNotEmpty ||
+                      updateController.text != selectedQuote?.quote ||
+                      selectedQuote != null) {
+                    data.updateDataAndRefresh(
+                      quote: selectedQuote!.copyWith(
+                        quote: updateController.text,
+                      ),
+                    );
+                  }
+                },
+                icon: Icon(Icons.save),
+              ),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final db = await DbHelper.db;
-              final result = await db.rawQuery('SELECT * FROM QUOTES');
-              print(result);
-            },
-            child: Text('READ'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final db = await DbHelper.db;
-              await db.update(
-                'QUOTES',
-                {'AUTHOR': 'LUIZ'},
-                where: 'id = ?',
-                whereArgs: [2],
+          ListenableBuilder(
+            listenable: data,
+            builder: (context, child) {
+              if (data.isLoading) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: data.quotes.length,
+                  itemBuilder: (context, index) {
+                    return Material(
+                      color: selectedQuote?.id == data.quotes[index].id
+                          ? Colors.amber
+                          : Colors.white,
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            if (selectedQuote?.id == data.quotes[index].id) {
+                              selectedQuote = null;
+                              updateController.text = '';
+                              return;
+                            }
+                            selectedQuote = data.quotes[index];
+                            updateController.text = data.quotes[index].quote;
+                          });
+                        },
+
+                        leading: Text(data.quotes[index].id.toString()),
+                        title: Text(data.quotes[index].quote),
+                        subtitle: Text(data.quotes[index].author),
+                      ),
+                    );
+                  },
+                ),
               );
             },
-            child: Text('UPDATE'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final db = await DbHelper.db;
-              await db.delete('QUOTES', where: "ID = ?", whereArgs: [1]);
-            },
-            child: Text('DELETE'),
           ),
         ],
       ),
